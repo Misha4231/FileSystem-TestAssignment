@@ -17,5 +17,6 @@ class File:
         return {
             "content": self.content,
             "created_at": self.created_at,
-            "modified_at": self.modified_at
+            "modified_at": self.modified_at,
+            "size": self.size()
         }

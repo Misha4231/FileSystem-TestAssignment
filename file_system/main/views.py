@@ -17,21 +17,20 @@ class FileSystemView(APIView):
                 return Response(e.args, status=404)
             
             sort = request.query_params.get('sort')
-            reverse = True if request.query_params.get('reverse') == '1' else False
+            reverse = True if request.query_params.get('reserve') == 'true' else False
 
             return Response(fs.list_files(sort_by=sort, reverse=reverse))
         else: 
             # file content
             try:
-                content = fs.read_file(path)
+                content = fs.read_file(path).serializable()
                 return Response(content)
             except KeyError as e:
                 return Response(e.args, status=404)
             
 
-class SearchFileView(APIView):
+class SearchFileAndDirectoryView(APIView):
     def get(self, request: Request):
-        filename = request.query_params.get('filename')
-        content = request.query_params.get('content')
+        path = request.query_params.get('path')
         
-        return Response(fs.search_file(filename, content))
+        return Response(fs.search_file_and_directory(path))

@@ -18,7 +18,7 @@ class SimpleFileSystem:
         if name not in self.files.keys():
             raise KeyError('File not exists')
         
-        return self.files[name].serializable()
+        return self.files[name]
     
     def update_file(self, name: str, content: str) -> None:
         if name not in self.files.keys():
@@ -29,9 +29,6 @@ class SimpleFileSystem:
     def delete_file(self, name: str) -> None:
         self.files.pop(name)
 
-    def list_files(self):
-        return self.files.keys()
-    
     def execute_command(self, command: str) -> str | None:
         if command == 'ls':
             return ' '.join(self.list_files())
@@ -64,6 +61,9 @@ class SimpleFileSystem:
 
         return results
 
+    def search_file_and_directory(self, path: str):
+        return [p for p in self.files.keys() if path in p]
+
     def list_files(self, sort_by: str | None = None, reverse: bool = False) -> list[str]:
         # get file names in current directory
         current_files = set()
@@ -75,7 +75,7 @@ class SimpleFileSystem:
                 is_directory = relative_path.count('/') > 0
                 if is_directory:
                     current_files.add(first_part + '/')
-                else:
+                elif first_part:
                     current_files.add(first_part)
 
         current_files = list(current_files)
