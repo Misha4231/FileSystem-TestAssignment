@@ -5,7 +5,9 @@ class SimpleFileSystem:
         self.files: dict[str, File | None] = {
             'data/': None,
             'file.txt': File('some content'),
+            'etc/': None,
             'etc/root/': None,
+            'usr/': None,
             'usr/executable.exe': File('scriptasdasd'),
             'usr/bash.exe': File('more script'),
         }

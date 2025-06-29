@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import FileBrowser from './FileBrowser'
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import type { SortingParams } from './types';
 import SortingPanel from './SortingPanel';
+import SearchInput from './SearchInput';
 
 
 function App() {
@@ -19,7 +20,10 @@ function App() {
 
   return (
     <>
-      <h1 className='mt-3 mb-3'>File System {path}</h1>
+      <div className="d-flex justify-content-between mt-3 mb-3">
+        <h1><Link to='/' className='text-white text-decoration-none'>File System</Link> {path}</h1>
+        <SearchInput/>
+      </div>
 
       {path.endsWith('/') && <SortingPanel sorting={sorting} setSorting={setSorting} />}
       <FileBrowser path={path} sorting={sorting}/>
