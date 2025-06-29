@@ -9,16 +9,29 @@ fs = SimpleFileSystem()
 
 class FileSystemView(APIView):
     def get(self, request: Request, path: str):
-        if path.endswith('/') or path == '': # directory view
+        if path.endswith('/') or path == '': 
+            # directory view
             try:
                 fs.set_directory(path)
             except KeyError as e:
                 return Response(e.args, status=404)
             
-            return Response(fs.list_files())
-        else: # file content
+            sort = request.query_params.get('sort')
+            reverse = True if request.query_params.get('reverse') == '1' else False
+
+            return Response(fs.list_files(sort_by=sort, reverse=reverse))
+        else: 
+            # file content
             try:
                 content = fs.read_file(path)
                 return Response(content)
             except KeyError as e:
                 return Response(e.args, status=404)
+            
+
+class SearchFileView(APIView):
+    def get(self, request: Request):
+        filename = request.query_params.get('filename')
+        content = request.query_params.get('content')
+        
+        return Response(fs.search_file(filename, content))

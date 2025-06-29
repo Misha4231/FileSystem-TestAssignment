@@ -12,3 +12,10 @@ class File:
     def update_content(self, content: str):
         self.content = content
         self.modified_at = datetime.now()
+
+    def serializable(self) -> dict[str, str]:
+        return {
+            "content": self.content,
+            "created_at": self.created_at,
+            "modified_at": self.modified_at
+        }

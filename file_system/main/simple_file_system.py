@@ -2,12 +2,12 @@ from .file import File
 
 class SimpleFileSystem:
     def __init__(self):
-        self.files: dict[str, File] = {
-            'data/': '',
-            'file.txt': 'some content',
-            'etc/root/': '',
-            'usr/executable.exe': 'scriptasdasd',
-            'usr/bash.exe': 'more script',
+        self.files: dict[str, File | None] = {
+            'data/': None,
+            'file.txt': File('some content'),
+            'etc/root/': None,
+            'usr/executable.exe': File('scriptasdasd'),
+            'usr/bash.exe': File('more script'),
         }
         self.directory: str = ''
 
@@ -18,7 +18,7 @@ class SimpleFileSystem:
         if name not in self.files.keys():
             raise KeyError('File not exists')
         
-        return self.files[name]
+        return self.files[name].serializable()
     
     def update_file(self, name: str, content: str) -> None:
         if name not in self.files.keys():
@@ -59,8 +59,8 @@ class SimpleFileSystem:
 
         for path, file in self.files.items():
             # if file lays in current directory and have provided filename or provided content
-            if path.startswith(self.directory) and ((filename and filename in path.split('/')[-1]) or (content and content in file.content)):
-                results.append({path: file})
+            if path.startswith(self.directory) and ((filename and filename in path.split('/')[-1]) or (content and file and content in file.content)):
+                results.append({path: file.serializable()})
 
         return results
 
