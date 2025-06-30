@@ -27,7 +27,24 @@ class FileSystemView(APIView):
                 return Response(content)
             except KeyError as e:
                 return Response(e.args, status=404)
-            
+    
+    # create path (directory or file)
+    def post(self, request: Request, path: str):
+        fs.create_file(path)
+        return Response(status=201)
+
+    # delete path (directory or file)
+    def delete(self, request: Request, path: str):
+        fs.delete_file(path)
+        return Response(status=204)
+    
+    def put(self, request: Request, path: str):
+        try:
+            fs.update_file(path, request.data['content'])
+        except KeyError as e:
+            return Response(e.args, status=400)
+        
+        return Response(status=200)
 
 class SearchFileAndDirectoryView(APIView):
     def get(self, request: Request):

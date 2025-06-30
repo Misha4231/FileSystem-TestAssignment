@@ -13,9 +13,6 @@ class SimpleFileSystem:
         }
         self.directory: str = ''
 
-    def create_file(self, name: str, content: str) -> None:
-        self.files[name] = File(content)
-
     def read_file(self, name: str) -> File:
         if name not in self.files.keys():
             raise KeyError('File not exists')
@@ -27,9 +24,6 @@ class SimpleFileSystem:
             raise KeyError('File not exists')
         
         self.files[name].update_content(content)
-
-    def delete_file(self, name: str) -> None:
-        self.files.pop(name)
 
     def execute_command(self, command: str) -> str | None:
         if command == 'ls':
@@ -97,3 +91,28 @@ class SimpleFileSystem:
 
         return current_files
     
+    def create_file(self, path: str):
+        parts = path.split('/')
+        print(parts)
+
+        curr = ""
+        for i, part in enumerate(parts):
+            if not part:
+                continue
+
+            is_last = i == len(parts) - 1
+
+            curr = f"{curr}/{part}" if curr else part
+
+            print(curr)
+            if curr not in self.files.keys():
+                new_path = curr if is_last else curr + '/' # must end with / if directory
+                new_value = File('') if is_last and not path.endswith('/') else None # file object if path routes to file and program is on last iteration
+                
+                self.files[new_path] = new_value
+            
+
+    def delete_file(self, path: str):
+        self.files = {
+            k: v for k, v in self.files.items() if not k.startswith(path)
+        }

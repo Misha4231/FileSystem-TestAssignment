@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { API_HOST } from "./config";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { FileBrowserProps, File } from "./types";
 
 
@@ -25,6 +25,15 @@ const FileBrowser = ({ path, sorting }: FileBrowserProps) => {
         
         fetchFilesListing()
     }, [path, sorting])
+    
+    const deletePathHandler = async(name: string) => {
+        await axios.delete(`${API_HOST}/fs${path}${name}`);
+        setCurrentFiles(currentFiles.filter(n => n != name));
+    }
+
+    const updateFileHandler = async() => {
+        await axios.put(`${API_HOST}/fs${path}`, {content: currentFileContent?.content})
+    }
 
     return (
         <div>
@@ -35,13 +44,22 @@ const FileBrowser = ({ path, sorting }: FileBrowserProps) => {
                     : 
                     <ul className="list-group">
                         {currentFiles.map((name, i) => (
-                            <li key={i} onClick={() => {navigate(path + name)}} className="list-group-item list-group-item-action" style={style.listItem}>{name}</li>
+                            <li key={i} className="list-group-item list-group-item-action" style={style.listItem}>
+                                <strong className="p-1 fs-5" onClick={() => {navigate(path + name)}}>{name}</strong>
+                                {!name.endsWith('/') && <Link to={path + name} className="p-1 fs-6 text-light text-decoration-none">Edit</Link>}
+                                <span onClick={async() => await deletePathHandler(name)} className="p-1 fs-6 text-light">Delete</span>
+                            </li>
                         ))}
                     </ul>
             ) 
             : 
             <div>
-                <p className="mb-5">{currentFileContent?.content}</p>
+                <textarea 
+                    value={currentFileContent?.content} 
+                    onChange={e => setFileContent({...currentFileContent, content: e.target.value})}
+                    className="mb-2 form-control" rows={3}>
+                </textarea>
+                <button onClick={updateFileHandler} type="button" className="btn btn-primary mb-3">Save</button><br />
                 <span><strong>Size:</strong> {currentFileContent?.size} B</span><br />
                 <span><strong>Created at:</strong> {currentFileContent?.created_at}</span><br />
                 <span><strong>Modified at:</strong> {currentFileContent?.modified_at}</span>

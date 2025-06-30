@@ -12,9 +12,9 @@ export type FileBrowserProps = {
 
 export type File = {
     content: string;
-    created_at: string;
-    modified_at: string;
-    size: number;
+    created_at?: string | undefined;
+    modified_at?: string | undefined;
+    size?: number | undefined;
 }
 
 export type SortingPanelProps = {
