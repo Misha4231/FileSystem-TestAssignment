@@ -41,6 +41,10 @@ class SimpleFileSystem:
             raise Exception('Unnown command')
 
     def set_directory(self, directory: str):
+        if directory == '': #edge case
+            self.directory = directory
+            return
+
         directory_exists = any(d.startswith(directory) for d in self.files.keys())
         if not directory_exists:
             raise KeyError('Directory not exists')
@@ -116,3 +120,6 @@ class SimpleFileSystem:
         self.files = {
             k: v for k, v in self.files.items() if not k.startswith(path)
         }
+
+    def clear(self):
+        self.files.clear()
